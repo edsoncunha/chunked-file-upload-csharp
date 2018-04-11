@@ -1,0 +1,13 @@
+image: microsoft/dotnet:sdk
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - dotnetcore
+        script: 
+          - export PROJECT_NAME=ChunkedUploadWebApi/ChunkedUploadWebApi.csproj
+          - export TEST_NAME=ChunkedUploadWebApi.Tests/ChunkedUploadWebApi.Tests.csproj
+          - dotnet restore
+          - dotnet build $PROJECT_NAME
+          - dotnet test $TEST_NAME

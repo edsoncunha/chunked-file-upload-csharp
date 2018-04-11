@@ -1,0 +1,6 @@
+bin/
+obj/
+.directory
+.vscode/
+files_store/
+file_store/
