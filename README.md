@@ -2,7 +2,8 @@
 [![Build Status](https://travis-ci.org/edsoncunha/chunked-file-upload-csharp.svg?branch=master)](https://travis-ci.org/edsoncunha/chunked-file-upload-csharp)
 [![License Apache2](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
-This is a sample project to demo chunked uploading to a server built with .NET Core WebApi 2.
+An example to demonstrate chunked file uploading to a .NET Core WebApi 2 server.
+The client uses [Resumable.js](https://github.com/23/resumable.js), which in turn uses HTML 5 file API to generate the chunks.
 
 A Java version is also available [https://github.com/edsoncunha/chunked-file-upload-sample](https://github.com/edsoncunha/chunked-file-upload-sample). 
 
@@ -28,10 +29,8 @@ API Documentation will be available on [localhost:5000/api-docs](http://localhos
     dd if=/dev/urandom of=file.tmp bs=1M count=1024 #creates a 1GB file
 
 
+
 Upload generated files, download it from server and check whether the checksums match with ``sha1sum``
+
     sha1sum file.tmp
 
-
-# Acknowledgements
-
-This sample uses [Resumable.js](https://github.com/23/resumable.js)
