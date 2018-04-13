@@ -24,7 +24,7 @@ API Documentation will be available on [localhost:5000/api-docs](http://localhos
 
 ### Testing
 
-* Generate a large file with random data
+Generate a large file with random data:
 
     dd if=/dev/urandom of=file.tmp bs=1M count=1024 #creates a 1GB file
 
