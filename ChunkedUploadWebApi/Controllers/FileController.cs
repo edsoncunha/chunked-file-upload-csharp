@@ -60,7 +60,7 @@ namespace ChunkedUploadWebApi.Controllers
         /// <param name="userId">User ID</param>
         /// <param name="sessionId">Session ID</param>
         /// <param name="chunkNumber">Chunk number (starts from 1)</param>
-        /// <param name="files">File chunk content</param>
+        /// <param name="inputFile">File chunk content</param>
         [HttpPut("upload/user/{userId}/session/{sessionId}/")]
         [Produces("application/json")]
         [Consumes("multipart/form-data")]
@@ -68,25 +68,27 @@ namespace ChunkedUploadWebApi.Controllers
         [SwaggerResponse(202, Description = "Server busy during that particular upload. Try again")]
         [SwaggerResponse(410, Description = "Session timeout")]
         [SwaggerResponse(500, Description = "Internal server error")]
-        public void UploadFileChunk([FromRoute, Required] long? userId,
+        public JsonResult UploadFileChunk([FromRoute, Required] long? userId,
                                         [FromRoute, Required] string sessionId,
                                         [FromQuery, Required] int? chunkNumber,
                                         [FromForm] IFormFile inputFile)
         {
-            // if (userId == null)
-            //     return badRequest("User missing");
+            if (!userId.HasValue)
+                return badRequest("User missing");
 
-            // if (StringUtils.isEmpty(sessionId))
-            //     return badRequest("Session ID is missing");
+            if (String.IsNullOrWhiteSpace(sessionId))
+                return badRequest("Session ID is missing");
 
-            // if (chunkNumber < 1)
-            //     return badRequest("Invalid chunk number");
+            if (chunkNumber < 1)
+                return badRequest("Invalid chunk number");
 
             // due to a bug, inputFile comes null from Mvc
             // however, I want to test the code and have to pass it to the UploadFileChunk function...
             IFormFile file = (inputFile ?? Request.Form.Files.First());
 
             uploadService.persistBlock(sessionId, userId.Value, chunkNumber.Value, ToByteArray(file.OpenReadStream()));
+
+            return Json("Ok");
         }
 
         /// <summary>
@@ -149,13 +151,21 @@ namespace ChunkedUploadWebApi.Controllers
             }
         }
 
+        private JsonResult badRequest(string message) {
+            var result = new JsonResult("{'message': '" + message + "' }");
+            result.StatusCode = 400;
+            return result;
+        }
+
         Stream targetOutputStream = null;
         // intended for integration tests only
+        [ApiExplorerSettings(IgnoreApi=true)]
         public void SetOuputStream(Stream replacementStream) {
             this.targetOutputStream = replacementStream;
         }
 
         HttpResponse targetResponse = null;
+        [ApiExplorerSettings(IgnoreApi=true)]
         public void SetTargetResponse(HttpResponse replacementResponse) {
             this.targetResponse = replacementResponse;
         }
